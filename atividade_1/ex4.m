@@ -1,0 +1,1 @@
+% Alteração de temperatura: \Delta T = 40 Celsius

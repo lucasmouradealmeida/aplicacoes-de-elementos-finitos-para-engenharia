@@ -1,0 +1,1 @@
+% Modifique o código do exercício 3 modificando o posicionamento da carga
