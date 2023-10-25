@@ -22,16 +22,16 @@ le(2) = 4.0E+02; % Comprimento do elemento 2 em mm
 % MATRIZES DE RIGIDEZ DO ELEMENTO E MATRIZ DE RIGIDEZ GLOBAL
 KG = zeros(ne+1,ne+1);
 
-for i=1:2
-  ke(1,1,i) =  1.0*Ae(i)*Ee(i)/le(i);
-  ke(1,2,i) = -1.0*Ae(i)*Ee(i)/le(i);
-  ke(2,1,i) = -1.0*Ae(i)*Ee(i)/le(i);
-  ke(2,2,i) =  1.0*Ae(i)*Ee(i)/le(i);
+for i = 1:ne
+    % Calcula a matriz de rigidez do elemento i
+    ke = zeros(2, 2);
+    ke(1, 1) =  1.0 * Ae(i) * Ee(i) / le(i);
+    ke(1, 2) = -1.0 * Ae(i) * Ee(i) / le(i);
+    ke(2, 1) = -1.0 * Ae(i) * Ee(i) / le(i);
+    ke(2, 2) =  1.0 * Ae(i) * Ee(i) / le(i);
 
-  KG(i,i)     = KG(i,i)     + ke(1,1,i);
-  KG(i,i+1)   = KG(i,i+1)   + ke(1,2,i);
-  KG(i+1,i)   = KG(i+1,i)   + ke(2,1,i);
-  KG(i+1,i+1) = KG(i+1,i+1) + ke(2,2,i);
+    % Monta a matriz de rigidez global
+    KG(i:i+1, i:i+1) = KG(i:i+1, i:i+1) + ke;
 end
 
 % EXIBIÇÃO DAS MATRIZES DE RIGIDEZ DO ELEMENTO
