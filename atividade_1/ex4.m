@@ -94,25 +94,25 @@ R = KG * Q - F;
 
 % TENSÕES NO ELEMENTO 1
 S1 = zeros(ne + 1, 1);
-for i = 1:size(S1)
+for i = 1:(ne+1)
     S1(i, 1) = F(i, 1) / Ae(1);
 end
 
 % TENSÕES NO ELEMENTO 2
 S2 = zeros(ne + 1, 1);
-for i = 1:size(S2)
+for i = 1:(ne+1)
     S2(i, 1) = F(i, 1) / Ae(2);
 end
 
 % TENSÕES NO ELEMENTO 3
 S3 = zeros(ne + 1, 1);
-for i = 1:size(S3)
+for i = 1:(ne+1)
     S3(i, 1) = F(i, 1) / Ae(3);
 end
 
 % TENSÕES NO ELEMENTO 4
 S4 = zeros(ne + 1, 1);
-for i = 1:size(S4)
+for i = 1:(ne+1)
     S4(i, 1) = F(i, 1) / Ae(4);
 end
 

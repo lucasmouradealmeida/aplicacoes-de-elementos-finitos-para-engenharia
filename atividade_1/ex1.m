@@ -86,14 +86,14 @@ R
 
 % TENSÕES NO ELEMENTO 1
 S1 = zeros(ne+1,1);
-for i=1:size(S1) 
+for i=1:(ne+1)
   S1(i,1) = F(i, 1)/Ae(1);
 end
 S1
 
 % TENSÕES NO ELEMENTO 2
 S2 = zeros(ne+1,1);
-for i=1:size(S2) 
+for i=1:(ne+1) 
   S2(i,1) = F(i, 1)/Ae(2);
 end
 S2
