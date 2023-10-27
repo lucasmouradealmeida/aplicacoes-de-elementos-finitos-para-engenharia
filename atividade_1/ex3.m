@@ -97,30 +97,20 @@ R
 
 % DETERMINAÇÃO DAS TENSÕES EM CADA MATERIAL
 
-% TENSÕES NO ELEMENTO 1
-S1 = zeros(ne+1,1);
-for i=1:(ne+1)
-  S1(i,1) = F(i, 1)/Ae(1);
-end
-S1
+% Inicialização das tensões em cada elemento
+Stresses = zeros(ne, 1);
 
-% TENSÕES NO ELEMENTO 2
-S2 = zeros(ne+1,1);
-for i=1:(ne+1) 
-  S2(i,1) = F(i, 1)/Ae(2);
-end
-S2
+% Cálculo das tensões em cada elemento
+for i = 1:ne
+    % Vetor de deslocamentos nodais do elemento i
+    u_i = Q(i);
+    u_j = Q(i + 1);
 
-% TENSÕES NO ELEMENTO 3
-S3 = zeros(ne+1,1);
-for i=1:(ne+1) 
-  S3(i,1) = F(i, 1)/Ae(3);
+    % Cálculo das tensões no elemento i
+    stress_i = (Ee(i) / le(i)) * [-1 1] * [u_i; u_j];
+    
+    Stresses(i) = stress_i;
 end
-S3
 
-% TENSÕES NO ELEMENTO 4
-S4 = zeros(ne+1,1);
-for i=1:(ne+1)
-  S4(i,1) = F(i, 1)/Ae(4);
-end
-S4
+% Exibição das tensões em cada elemento
+Stresses
