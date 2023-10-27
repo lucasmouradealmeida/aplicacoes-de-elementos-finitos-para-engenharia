@@ -90,34 +90,25 @@ R = KG * Q - F;
 
 % DETERMINAÇÃO DAS TENSÕES EM CADA MATERIAL
 
-% TENSÕES NO ELEMENTO 1
-S1 = zeros(ne + 1, 1);
-for i = 1:(ne+1)
-    S1(i, 1) = (F(i, 1) - F_thermal(i)) / Ae(1);
+% Inicialização das tensões em cada elemento
+Stresses = zeros(ne, 1);
+
+% Cálculo das tensões em cada elemento
+for i = 1:ne
+    % Vetor de deslocamentos nodais do elemento i
+    u_i = Q(i);
+    u_j = Q(i + 1);
+
+    % Cálculo das tensões no elemento i
+    stress_i = (Ee(i) / le(i)) * [-1 1] * [u_i; u_j];
+    
+    Stresses(i) = stress_i;
 end
 
-% TENSÕES NO ELEMENTO 2
-S2 = zeros(ne + 1, 1);
-for i = 1:(ne+1)
-    S2(i, 1) = (F(i, 1) - F_thermal(i)) / Ae(2);
-end
-
-% TENSÕES NO ELEMENTO 3
-S3 = zeros(ne + 1, 1);
-for i = 1:(ne+1)
-    S3(i, 1) = (F(i, 1) - F_thermal(i)) / Ae(3);
-end
-
-% TENSÕES NO ELEMENTO 4
-S4 = zeros(ne + 1, 1);
-for i = 1:(ne+1)
-    S4(i, 1) = (F(i, 1) - F_thermal(i)) / Ae(4);
-end
+% Exibição das tensões em cada elemento
+Stresses
 
 % Exibição dos resultados
 Q % Deslocamentos nodais globais com efeitos da variação de temperatura
 R % Forças de reação com efeitos da variação de temperatura
-S1 % Tensões no Elemento 1 com efeitos da variação de temperatura
-S2 % Tensões no Elemento 2 com efeitos da variação de temperatura
-S3 % Tensões no Elemento 3 com efeitos da variação de temperatura
-S4 % Tensões no Elemento 4 com efeitos da variação de temperatura
+
