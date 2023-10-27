@@ -1,9 +1,3 @@
-% Alteração de temperatura: \Delta T = 40 Celsius
-
-% Determinar: Deslocamentos nodais, tensões de cada material, forças de reação
-% Método: direto
-% Elemento 1/2: L = 300mm; A = 2400 m²; E = 70 10⁹ N/m²
-% Elemento 3/4: L = 400mm; A = 600 m²; E = 200 10⁹ N/m²
 clear all
 clc
 
@@ -37,12 +31,6 @@ ae(4) = 11.7E-06; % Coeficiente de dilatação térmica do elemento 4 em 1/°C
 % Variação de temperatura (em graus Celsius)
 delta_T = 40;
 
-% Coeficientes de dilatação térmica ajustados
-ae(1) = ae(1) * (1 + ae(1) * delta_T);
-ae(2) = ae(2) * (1 + ae(2) * delta_T);
-ae(3) = ae(3) * (1 + ae(3) * delta_T);
-ae(4) = ae(4) * (1 + ae(4) * delta_T);
-
 % MATRIZES DE RIGIDEZ DO ELEMENTO E MATRIZ DE RIGIDEZ GLOBAL
 KG = zeros(ne + 1, ne + 1);
 
@@ -51,16 +39,32 @@ for i = 1:ne
     ke = zeros(2, 2);
     ke(1, 1) = 1.0 * Ae(i) * Ee(i) / le(i);
     ke(1, 2) = -1.0 * Ae(i) * Ee(i) / le(i);
-    ke(2, 1) = -1.0 * Ae(i) * Ee(i) / le(i);
+    ke(2, 1) = -1.0 * Ae(i) * Ee(i) / le (i);
     ke(2, 2) = 1.0 * Ae(i) * Ee(i) / le(i);
 
     % Monta a matriz de rigidez global
     KG(i:i + 1, i:i + 1) = KG(i:i + 1, i:i + 1) + ke;
 end
 
+% Coeficientes de dilatação térmica ajustados
+for i = 1:ne
+    ae(i) = ae(i) * (1 + ae(i) * delta_T);
+end
+
+% Calcula as tensões térmicas devido à variação de temperatura
+F_thermal = zeros(ne + 1, 1);
+
+for i = 1:ne
+    delta_L = le(i) * ae(i) * delta_T;
+    F_thermal(i) = Ae(i) * Ee(i) * delta_L;
+end
+
 % CONDIÇÕES DE CONTORNO NATURAIS (FORÇAS E MOMENTOS)
 F = zeros(ne + 1, 1);
 F(3, 1) = 200.0E+03; % Aplicando uma força de 200 kN no terceiro nó
+
+% Adiciona a força térmica à força aplicada
+F = F + F_thermal;
 
 % SALVANDO O VETOR DE FORÇA ORIGINAL
 F_ORIG = F;
@@ -81,12 +85,6 @@ F(ne + 1, 1) = 0.0; % Consequência da condição de contorno essencial
 % RESOLVENDO O PROBLEMA COM TODAS AS CONDIÇÕES DE CONTORNO
 Q = inv(KG) * F; % Vetor de deslocamentos nodais globais
 
-% Efeitos da variação de temperatura nos deslocamentos
-for i = 1:ne
-    delta_L = le(i) * ae(i) * delta_T;
-    Q(i) = Q(i) + delta_L;
-end
-
 % CALCULANDO AS FORÇAS DE REAÇÃO
 R = KG * Q - F;
 
@@ -95,25 +93,25 @@ R = KG * Q - F;
 % TENSÕES NO ELEMENTO 1
 S1 = zeros(ne + 1, 1);
 for i = 1:(ne+1)
-    S1(i, 1) = F(i, 1) / Ae(1);
+    S1(i, 1) = (F(i, 1) - F_thermal(i)) / Ae(1);
 end
 
 % TENSÕES NO ELEMENTO 2
 S2 = zeros(ne + 1, 1);
 for i = 1:(ne+1)
-    S2(i, 1) = F(i, 1) / Ae(2);
+    S2(i, 1) = (F(i, 1) - F_thermal(i)) / Ae(2);
 end
 
 % TENSÕES NO ELEMENTO 3
 S3 = zeros(ne + 1, 1);
 for i = 1:(ne+1)
-    S3(i, 1) = F(i, 1) / Ae(3);
+    S3(i, 1) = (F(i, 1) - F_thermal(i)) / Ae(3);
 end
 
 % TENSÕES NO ELEMENTO 4
 S4 = zeros(ne + 1, 1);
 for i = 1:(ne+1)
-    S4(i, 1) = F(i, 1) / Ae(4);
+    S4(i, 1) = (F(i, 1) - F_thermal(i)) / Ae(4);
 end
 
 % Exibição dos resultados
